@@ -83,7 +83,7 @@ setup_emoji(){
 }
 
 launching_command() {
-    echo "${SHELL_FLAG}${YELLOW} : ${RESET}${BG_BLACK}${ITALIC}$ $1 ${RESET}"
+    echo "${SHELL_FLAG}${YELLOW}	${RESET}${BG_BLACK}${ITALIC}$ $1 ${RESET}"
 }
 
 warning_text() {
@@ -105,6 +105,7 @@ press_any_key_to_continue() {
 }
 
 write_hf() {
+	launching_command "find . -name "*.c" -exec basename {} \; | tr '\n' ' '"
 	find . -name "*.c" -exec basename {} \; | tr '\n' ' '
 	printf "\n"
 	information "Here is the list of all your .c"
@@ -139,6 +140,7 @@ write_hf() {
 	TOTAL_LINE=$(cat ${HF_NAME} | wc -l | tr -d ' ')
 	information "I write ${TOTAL_LINE} function(s) in your ${HF_NAME}"
 	information "I will open ${HF_NAME} and add the 42 header"
+	launching_command "vim -c ":Stdheader" ${HF_NAME}"
 	vim -c ":Stdheader" ${HF_NAME}
 }
 
@@ -157,12 +159,14 @@ check_hf_exist() {
 }
 
 hf_create() {
+	launching_command "touch ${HF_NAME}"
 	touch ${HF_NAME}
 	information "Your HEADER FILE is now create : ${HF_NAME}"
 }
 
 hf_backup() {
 	HF_BACKUP_NAME="${HF_NAME}_OLD-$(date +"%F %T")"
+	launching_command "mv "${HF_NAME}" "${HF_BACKUP_NAME}""
 	mv "${HF_NAME}" "${HF_BACKUP_NAME}"
 	information "I backup your HEADER FILE with the name ${HF_BACKUP_NAME}"
 }
@@ -184,6 +188,17 @@ ask_hf_name() {
 	export HF_NAME
 }
 
+message_exit() {
+    echo "${YELLOW}#######################################################${RESET}"
+    echo ""
+    echo "${RED}${BOLD}Thank you for using this script to the end${RESET}"
+    echo "${RED}${BOLD}If you love my work you can buy me coffee${RESET}"
+	printf "\n"
+    echo "${YELLOW}${BOLD}URL : https://www.buymeacoffee.com/LinkPhoenix${RESET}"
+    echo ""
+    echo "${YELLOW}#######################################################${RESET}"
+}
+
 main() {
 	setup_color
 	setup_emoji
@@ -191,6 +206,7 @@ main() {
 	ask_hf_name
 	check_hf_exist
 	write_hf
+	message_exit
 }
 
 main
