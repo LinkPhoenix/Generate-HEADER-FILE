@@ -87,7 +87,7 @@ launching_command() {
 }
 
 warning_text() {
-    echo "${RED}${BOLD}$1${RESET}"
+    echo "${WARNING_FLAG} ${RED}${BOLD}$1${RESET}"
 }
 
 detect_text() {
@@ -95,50 +95,102 @@ detect_text() {
 }
 
 information() {
-    echo "${INFORMATION_FLAG} ${RED}${BOLD}$1${RESET}"
+    echo "${INFORMATION_FLAG}	${YELLOW}${BOLD}$1${RESET}"
     press_any_key_to_continue
 }
 
 press_any_key_to_continue() {
     read -n 1 -s -r -p "${GREEN}${BOLD}Press any key to continue${RESET}"
-    printf "\n"
+    printf "\n\n"
 }
 
-ask_create_new_libft() {
-	#NEED CODE
-	touch libft.h
-	vim -c ":Stdheader" libft.h
+write_hf() {
+	find . -name "*.c" -exec basename {} \; | tr '\n' ' '
+	printf "\n"
+	information "Here is the list of all your .c"
+
+	TYPE_VAR=("void" "char" "signed char" "unsigned char" \
+	"short" "short int" "signed short" "signed short int" \
+	"unsigned short" "unsigned short int" \
+	"int" "signed int" "unsigned int" \
+	"long" "long int" "signed long" "signed long int" \
+	"unsigned long" "unsigned long int" \
+	"long long" "long long int" "signed long long" "signed long long int" \
+	"unsigned long long" "unsigned long long int" \
+	"float" "double double float", "long double long", "double float" )
+
+	information "I will write in your new HEADER FILE"
+	TOTAL=${#TYPE_VAR[*]}
+
+	for (( i=0; i<=$(( $TOTAL -1 )); i++ ))
+	do 
+		cat *.c | grep "^${TYPE_VAR[$i]}\t.*[)]$" | sed s'/.$/);/' >> ${HF_NAME}
+	done
+
+	TYPE_VAR_STRUCT=("size_t" "t_list")
+
+	TOTAL=${#TYPE_VAR_STRUCT[*]}
+
+	for (( i=0; i<=$(( $TOTAL -1 )); i++ ))
+	do 
+		cat *.c | grep "^${TYPE_VAR_STRUCT[$i]}\t.*[)]$" | sed s'/.$/);/' >> ${HF_NAME}
+	done
+
+	TOTAL_LINE=$(cat ${HF_NAME} | wc -l | tr -d ' ')
+	information "I write ${TOTAL_LINE} function(s) in your ${HF_NAME}"
+	information "I will open ${HF_NAME} and add the 42 header"
+	vim -c ":Stdheader" ${HF_NAME}
 }
 
-ask_create_new_libft() {
-	#MEED CODE
-	touch libft.h
-	vim -c ":Stdheader" libft.h
-}
-
-add_ft_in_headerfile() {
-	find . -name "*.c" -exec basename {} \;
-	cat *.c | grep '^int\t.*[)]$' >> libft.h
-	cat *.c | grep '^char\t.*[)]$'  >> libft.h
-	cat *.c | grep '^void\t.*[)]$' >> libft.h
-	cat *.c | grep '^size_t\t.*[)]$' >> libft.h
-	cat *.c | grep '^t_list\t.*[)]$' >> libft.h
-}
-
-check_header_file() {
-	if [ -f ./libfth]
-		echo "libft.h already exist"
-		ask_create_new_libft
+check_hf_exist() {
+	if [[ -f ./"${HF_NAME}" ]]; then
+		warning_text "${HF_NAME} already exist"
+		information "I will create a backup of your HEADER FILE"
+		hf_backup
+		information "I will create your new HEADER FILE"
+		hf_create
 	else
-		echo "libft.h not exist"
-		ask_create_libft
+		information "${HF_NAME} not exist"
+		information "I will create your new HEADER FILE"
+		hf_create
+	fi
 }
 
-main(){
+hf_create() {
+	touch ${HF_NAME}
+	information "Your HEADER FILE is now create : ${HF_NAME}"
+}
+
+hf_backup() {
+	HF_BACKUP_NAME="${HF_NAME}_OLD-$(date +"%F %T")"
+	mv "${HF_NAME}" "${HF_BACKUP_NAME}"
+	information "I backup your HEADER FILE with the name ${HF_BACKUP_NAME}"
+}
+
+ask_hf_name() {
+	HF_NAME=
+	while true ; do
+		read -p "What is the name of the Header File you want to create ? : " HF_NAME
+		if [[ "$HF_NAME" == *.h ]]; then
+			## HF_NAME="${HF_NAME//.h}"
+			information "HEADER FILE NAME = ${HF_NAME}"
+			break
+		else
+			HF_NAME="${HF_NAME}.h"
+			information "HEADER FILE NAME = ${HF_NAME}"
+			break
+		fi
+	done
+	export HF_NAME
+}
+
+main() {
 	setup_color
 	setup_emoji
 
-	check_header_file
+	ask_hf_name
+	check_hf_exist
+	write_hf
 }
 
 main
