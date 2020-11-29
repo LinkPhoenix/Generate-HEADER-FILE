@@ -178,7 +178,10 @@ ask_hf_name() {
 	HF_NAME=
 	while true ; do
 		read -p "What is the name of the Header File you want to create ? : " HF_NAME
-		if [[ "$HF_NAME" == *.h ]]; then
+		if [[ "$HF_NAME" == "" ]]; then
+			warning_text "Please enter name"
+			ask_hf_name
+		elif [[ "$HF_NAME" == *.h ]]; then
 			## HF_NAME="${HF_NAME//.h}"
 			information "HEADER FILE NAME = ${HF_NAME}"
 			break
