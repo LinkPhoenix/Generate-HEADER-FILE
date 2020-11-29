@@ -142,8 +142,9 @@ write_hf() {
 	TOTAL_LINE=$(cat ${HF_NAME} | wc -l | tr -d ' ')
 	information "I write ${TOTAL_LINE} function(s) in your ${HF_NAME}"
 	information "I will open ${HF_NAME} and add the 42 header"
-	launching_command "vim -c ":Stdheader" ${HF_NAME}"
-	vim -c ":Stdheader" ${HF_NAME}
+	launching_command "vim -c \":Stdheader\" -c \":%s#^int\t#int\\t\\t#g\" -c \":%s#^char\t\t#char\\t#g\" ${HF_NAME}"
+	press_any_key_to_continue
+	vim -c ":Stdheader" -c ":%s#^int\t#int\\t\\t#g" -c ":%s#^char\t\t#char\\t#g" ${HF_NAME}
 }
 
 check_hf_exist() {
