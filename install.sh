@@ -136,13 +136,34 @@ ask_install_alias() {
 main() {
 	setup_color
 	setup_emoji
+
+	disclamer="
+SCRIPT INFOTMATION
+
+	Author              LinkPhoenix
+	Github              https://github.com/LinkPhoenix/
+	URL Repository      https://github.com/LinkPhoenix/Generate-HEADER-FILE
+
+DISCLAMER
+
+	${WARNING_FLAG}${WARNING_FLAG} Please use this script only if you already know how to do a HEADER FILE by yourself ${WARNING_FLAG}${WARNING_FLAG}
+
+______________________________________________________________
+
+"
+
+    i=0
+    while [ $i -lt ${#disclamer} ]; do
+        sleep 0.000000001
+        echo -ne "${YELLOW}${BOLD}${disclamer:$i:1}${RESET}" | tr -d "%"
+        ((i++))
+    done
 	
 	PATH_SCRIPT="$HOME/.generate_header"
 	export PATH_SCRIPT
 	NAME_SCRIPT="generate_headerfile.sh"
 	export NAME_SCRIPT
 	if [ -f ${PATH_SCRIPT}/${NAME_SCRIPT} ]; then
-		echo ${PATH_SCRIPT}/${NAME_SCRIPT}
 		warning_text "${PATH_SCRIPT}/${NAME_SCRIPT} already exist"
 	else
 		launching_command "wget https://raw.githubusercontent.com/LinkPhoenix/Generate-HEADER-FILE/main/${NAME_SCRIPT} -P ${PATH_SCRIPT}"
