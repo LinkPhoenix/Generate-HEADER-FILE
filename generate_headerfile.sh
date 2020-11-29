@@ -125,6 +125,7 @@ write_hf() {
 
 	for (( i=0; i<=$(( $TOTAL -1 )); i++ ))
 	do 
+		launching_command "cat *.c | grep "^${TYPE_VAR[$i]}\\t.*\[\)\]$" | sed s'/.$/);/' >> ${HF_NAME}"
 		cat *.c | grep "^${TYPE_VAR[$i]}\t.*[)]$" | sed s'/.$/);/' >> ${HF_NAME}
 	done
 
@@ -134,6 +135,7 @@ write_hf() {
 
 	for (( i=0; i<=$(( $TOTAL -1 )); i++ ))
 	do 
+		launching_command "cat *.c | grep "^${TYPE_VAR_STRUCT[$i]}\\t.*\[\)\]$" | sed s'/.$/);/' >> ${HF_NAME}"
 		cat *.c | grep "^${TYPE_VAR_STRUCT[$i]}\t.*[)]$" | sed s'/.$/);/' >> ${HF_NAME}
 	done
 
@@ -188,12 +190,19 @@ ask_hf_name() {
 	export HF_NAME
 }
 
+recap() {
+    echo ""
+    echo "${YELLOW}${BOLD}HEADER FILE NAME :	${HF_NAME}${RESET}"
+    echo "${YELLOW}${BOLD}Folder :		$(pwd)${RESET}"
+    echo ""
+}
+
 message_exit() {
     echo "${YELLOW}#######################################################${RESET}"
     echo ""
     echo "${RED}${BOLD}Thank you for using this script to the end${RESET}"
     echo "${RED}${BOLD}If you love my work you can buy me coffee${RESET}"
-	printf "\n"
+	echo ""
     echo "${YELLOW}${BOLD}URL : https://www.buymeacoffee.com/LinkPhoenix${RESET}"
     echo ""
     echo "${YELLOW}#######################################################${RESET}"
@@ -206,6 +215,7 @@ main() {
 	ask_hf_name
 	check_hf_exist
 	write_hf
+	recap
 	message_exit
 }
 
