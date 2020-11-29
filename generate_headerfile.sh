@@ -83,7 +83,7 @@ setup_emoji(){
 }
 
 launching_command() {
-    echo "${SHELL_FLAG}${YELLOW}	${RESET}${BG_BLACK}${ITALIC}$ $1 ${RESET}"
+    echo "${SHELL_FLAG}${YELLOW}	${RESET}${BG_BLACK}${ITALIC}$ $1 $2 $3 $4 ${RESET}"
 }
 
 warning_text() {
